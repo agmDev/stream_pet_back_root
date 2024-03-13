@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+    pet_stream_back:
+      build: 
+        context: app
+        dockerfile: ./Dockerfile
+      image: pet_stream_back
+      container_name: pet_stream_back
+      expose:
+        - 5000
+      volumes:
+        - ./app:/app
+      env_file:
+      - ./app/.env.dev
+      environment:
+        VIRTUAL_HOST: streamPetBack.agmd.moe
+        LETSENCRYPT_HOST: streamPetBack.agmd.moe
+    db:
+      image: postgres:16
+      volumes:
+        - postgres_data:/var/lib/postgresql/data/
+      environment:
+        - POSTGRES_USER=flask
+        - POSTGRES_PASSWORD=flask
+        - POSTGRES_DB=flask_dev
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    external: true
+    name: nginx-proxy
